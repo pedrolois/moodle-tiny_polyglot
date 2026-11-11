@@ -1,0 +1,74 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tiny_polyglot/dialogue
+
+    Body of the translation dialogue.
+
+    Context variables required for this template:
+    * uniqid - Unique prefix for element ids.
+    * summary - What will be translated.
+    * formatlabel - Output format description.
+    * languages - Offered languages: code, name, source, checked, disabled, existing (already in the content).
+
+    Example context (json):
+    {
+        "uniqid": "id_editor_polyglot",
+        "summary": "4 text blocks will be translated.",
+        "formatlabel": "Output: Multi-Language Content (v2) filter",
+        "languages": [
+            {"code": "en", "name": "English (en)", "source": true, "checked": false, "disabled": true, "existing": false},
+            {"code": "es", "name": "Español (es)", "source": false, "checked": true, "disabled": false, "existing": false},
+            {"code": "fr", "name": "Français (fr)", "source": false, "checked": false, "disabled": false, "existing": true}
+        ]
+    }
+}}
+<div class="tiny-polyglot">
+    <p class="mb-3">{{summary}}</p>
+    <div class="mb-3">
+        <label class="form-label" for="{{uniqid}}_source">{{#str}}sourcelang, tiny_polyglot{{/str}}</label>
+        <select class="form-select custom-select" id="{{uniqid}}_source" data-region="source">
+            {{#languages}}
+            <option value="{{code}}"{{#source}} selected{{/source}}>{{name}}</option>
+            {{/languages}}
+        </select>
+    </div>
+    <fieldset class="mb-3">
+        <legend class="form-label fs-6 h6 mb-1">{{#str}}targetlangs, tiny_polyglot{{/str}}</legend>
+        <p class="small text-muted mb-2">{{#str}}targetlangs_help, tiny_polyglot{{/str}}</p>
+        <div class="tiny-polyglot-targets">
+            {{#languages}}
+            <div class="d-flex flex-wrap align-items-center">
+                <div class="form-check me-3 mr-3">
+                    <input class="form-check-input" type="checkbox" value="{{code}}" id="{{uniqid}}_target_{{code}}"
+                        data-region="target"{{#checked}} checked{{/checked}}{{#disabled}} disabled{{/disabled}}>
+                    <label class="form-check-label" for="{{uniqid}}_target_{{code}}">{{name}}</label>
+                </div>
+                {{#existing}}
+                <div class="form-check small text-muted" data-region="retranslaterow" data-code="{{code}}">
+                    <input class="form-check-input" type="checkbox" value="{{code}}" id="{{uniqid}}_again_{{code}}"
+                        data-region="retranslate">
+                    <label class="form-check-label" for="{{uniqid}}_again_{{code}}">{{#str}}retranslate, tiny_polyglot{{/str}}</label>
+                </div>
+                {{/existing}}
+            </div>
+            {{/languages}}
+        </div>
+    </fieldset>
+    <p class="small text-muted mb-2">{{formatlabel}}</p>
+    <div data-region="status" role="status" aria-live="polite"></div>
+</div>
