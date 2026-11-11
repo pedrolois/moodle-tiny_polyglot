@@ -87,8 +87,9 @@ class translate extends external_api {
         if (!$fragments) {
             return ['success' => true, 'translations' => [], 'errormessage' => ''];
         }
-        if (count($fragments) > translator::MAX_FRAGMENTS
-                || \core_text::strlen(implode('', $fragments)) > translator::MAX_CHARS) {
+        $toolarge = count($fragments) > translator::MAX_FRAGMENTS
+            || \core_text::strlen(implode('', $fragments)) > translator::MAX_CHARS;
+        if ($toolarge) {
             throw new \invalid_parameter_exception('Too much content in a single request');
         }
 

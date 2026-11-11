@@ -206,8 +206,12 @@ class translator {
         $translations = self::request($context, $fragments, $source, $target, false);
 
         // Small models sometimes drop links or formatting: retry those fragments once, with a stricter prompt.
-        $broken = array_keys(array_filter($translations,
-            fn($html, $i) => !self::same_markup($fragments[$i], $html), ARRAY_FILTER_USE_BOTH));
+        $broken = [];
+        foreach ($translations as $i => $html) {
+            if (!self::same_markup($fragments[$i], $html)) {
+                $broken[] = $i;
+            }
+        }
         if ($broken) {
             try {
                 $retry = self::request($context, array_map(fn($i) => $fragments[$i], $broken), $source, $target, true);
@@ -236,8 +240,8 @@ class translator {
         foreach ($matches as [, $tag, $attributes]) {
             $tag = strtolower($tag);
             $target = '';
-            if (in_array($tag, ['a', 'img', 'iframe', 'video', 'audio', 'source'])
-                    && preg_match('/\b(?:href|src)\s*=\s*["\']([^"\']*)["\']/i', $attributes, $url)) {
+            $haslink = in_array($tag, ['a', 'img', 'iframe', 'video', 'audio', 'source']);
+            if ($haslink && preg_match('/\b(?:href|src)\s*=\s*["\']([^"\']*)["\']/i', $attributes, $url)) {
                 $target = ' ' . html_entity_decode($url[1]);
             }
             $signature[] = $tag . $target;
