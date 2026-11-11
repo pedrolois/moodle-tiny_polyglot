@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 (2026-11-11)
+
+- First stable release.
+
 ## 0.1.3 (2026-11-11)
 
 - The language list shows what the content has: untick a language to remove it, tick one to add it.

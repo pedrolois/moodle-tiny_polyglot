@@ -26,11 +26,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tiny_polyglot';
-$plugin->version   = 2026111103;
+$plugin->version   = 2026111104;
 $plugin->requires  = 2024100700; // Moodle 4.5 (first release with the AI subsystem).
 $plugin->supported = [405, 503];
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.1.3';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = '1.0.0';
 $plugin->dependencies = [
     'aiplacement_editor' => 2024100700,
 ];
