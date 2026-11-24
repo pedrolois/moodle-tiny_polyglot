@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 (2026-11-24)
+
+- The status of the dialogue (warning, progress, errors) is rendered with a Mustache template.
+
 ## 1.0.0 (2026-11-11)
 
 - First stable release.

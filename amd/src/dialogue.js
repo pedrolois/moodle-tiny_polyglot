@@ -90,6 +90,18 @@ const defaultSource = (languages, current) => {
 };
 
 /**
+ * Show a warning, the progress or the errors in the status area of the dialogue.
+ *
+ * @param {HTMLElement} status
+ * @param {Object} context Context of the tiny_polyglot/status template.
+ * @returns {Promise}
+ */
+const showStatus = async(status, context) => {
+    const {html, js} = await Templates.renderForPromise('tiny_polyglot/status', context);
+    Templates.replaceNodeContents(status, html, js);
+};
+
+/**
  * Open the dialogue, asking for the AI policy first when needed.
  *
  * @param {TinyMCE} editor
@@ -194,7 +206,7 @@ const run = async(editor, modal, root, blocks, existing, options) => {
         return multilang && removals.some((code) => code in variants);
     });
     if (!targets.length && !removesSomething) {
-        status.innerHTML = `<div class="alert alert-warning mb-0">${await getString('error:nochange', component)}</div>`;
+        await showStatus(status, {warning: await getString('error:nochange', component)});
         return;
     }
 
@@ -216,13 +228,12 @@ const run = async(editor, modal, root, blocks, existing, options) => {
     const errors = [];
 
     for (const [position, target] of targets.entries()) {
-        status.innerHTML = `<div class="d-flex align-items-center">
-            <span class="spinner-border spinner-border-sm me-2 mr-2" aria-hidden="true"></span>
-            <span></span></div>`;
-        status.querySelector('span:last-child').textContent = await getString('progress', component, {
-            language: names[target],
-            current: position + 1,
-            total: targets.length,
+        await showStatus(status, {
+            progress: await getString('progress', component, {
+                language: names[target],
+                current: position + 1,
+                total: targets.length,
+            }),
         });
         try {
             const translated = [];
@@ -268,15 +279,7 @@ const run = async(editor, modal, root, blocks, existing, options) => {
     }
 
     if (errors.length) {
-        const list = document.createElement('ul');
-        list.className = 'mb-0';
-        errors.forEach((message) => {
-            const item = document.createElement('li');
-            item.textContent = message;
-            list.appendChild(item);
-        });
-        status.innerHTML = '<div class="alert alert-danger mb-0"></div>';
-        status.firstElementChild.appendChild(list);
+        await showStatus(status, {haserrors: true, errors});
         return;
     }
 
